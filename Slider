@@ -1,0 +1,33 @@
+const { chromium } = require('playwright');
+
+(async () => {
+  // Launch the browser (supports Chromium, Firefox, and WebKit)
+  const browser = await chromium.launch();
+
+  // Create a new page
+  const page = await browser.newPage();
+
+  // Navigate to the web page with the Slider component
+  await page.goto('https://example.com/slider');
+
+  // Wait for the Slider element to appear
+  const sliderSelector = '#slider-id'; // Replace with the actual selector of the Slider element
+  await page.waitForSelector(sliderSelector);
+
+  // Move the Slider to a desired value (e.g., 50%)
+  const sliderElement = await page.$(sliderSelector);
+  const sliderWidth = await sliderElement.boundingBox().then(box => box.width);
+  const desiredValue = 50;
+  const moveBy = Math.floor((sliderWidth * desiredValue) / 100);
+  await page.mouse.move(await sliderElement.boundingBox().then(box => box.x), await sliderElement.boundingBox().then(box => box.y));
+  await page.mouse.down();
+  await page.mouse.move(await sliderElement.boundingBox().then(box => box.x) + moveBy, await sliderElement.boundingBox().then(box => box.y));
+  await page.mouse.up();
+
+  // Extract the value of the Slider
+  const sliderValue = await sliderElement.getAttribute('value');
+  console.log('Slider value:', sliderValue);
+
+  // Close the browser
+  await browser.close();
+})();
