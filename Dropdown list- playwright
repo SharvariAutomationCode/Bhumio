@@ -1,0 +1,30 @@
+const { chromium } = require('playwright');
+
+(async () => {
+  // Launch the browser (supports Chromium, Firefox, and WebKit)
+  const browser = await chromium.launch();
+
+  // Create a new page
+  const page = await browser.newPage();
+
+  // Navigate to the web page with the Dropdown list component
+  await page.goto('https://example.com/dropdown');
+
+  // Wait for the Dropdown list element to appear
+  const dropdownSelector = '#dropdown-id'; // Replace with the actual selector of the Dropdown list element
+  await page.waitForSelector(dropdownSelector);
+
+  // Click on the Dropdown list to open it
+  await page.click(dropdownSelector);
+
+  // Wait for the Dropdown options to appear
+  const optionSelector = '#dropdown-id option'; // Replace with the actual selector of the Dropdown options
+  await page.waitForSelector(optionSelector);
+
+  // Get the selected option value
+  const selectedOption = await page.$eval(dropdownSelector, (dropdown) => dropdown.value);
+  console.log('Selected option value:', selectedOption);
+
+  // Close the browser
+  await browser.close();
+})();
